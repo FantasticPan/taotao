@@ -4,14 +4,19 @@ import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.util.JsonUtil;
 import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
+import com.taotao.mapper.TbItemParamItemMapper;
 import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemParamItem;
+import com.taotao.pojo.TbItemParamItemExample;
 import com.taotao.rest.dao.JedisClient;
 import com.taotao.rest.service.ItemService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by FantasticPan on 2018/8/2.
@@ -25,6 +30,8 @@ public class ItemServiceImpl implements ItemService {
     private JedisClient jedisClient;
     @Autowired
     private TbItemDescMapper itemDescMapper;
+    @Autowired
+    private TbItemParamItemMapper itemParamItemMapper;
 
     @Value("${REDIS_ITEM_KEY}")
     private String REDIS_ITEM_KEY;
@@ -89,5 +96,44 @@ public class ItemServiceImpl implements ItemService {
             e.printStackTrace();
         }
         return TaotaoResult.ok(itemDesc);
+    }
+
+    @Override
+    public TaotaoResult getItemParam(long itemId) {
+        //添加缓存
+        try {
+            //添加缓存逻辑
+            //从缓存中取商品信息，商品id对应的信息
+            String json = jedisClient.get(REDIS_ITEM_KEY + ":" + itemId + ":param");
+            //判断是否有值
+            if (!StringUtils.isBlank(json)) {
+                //把json转换成java对象
+                TbItemParamItem paramItem = JsonUtil.jsonToPojo(json, TbItemParamItem.class);
+                return TaotaoResult.ok(paramItem);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //根据商品id查询规格参数
+        //设置查询条件
+        TbItemParamItemExample example = new TbItemParamItemExample();
+        TbItemParamItemExample.Criteria criteria = example.createCriteria();
+        criteria.andItemIdEqualTo(itemId);
+        //执行查询
+        List<TbItemParamItem> list = itemParamItemMapper.selectByExampleWithBLOBs(example);
+        if (list != null && list.size() > 0) {
+            TbItemParamItem paramItem = list.get(0);
+            try {
+                //把商品信息写入缓存
+                jedisClient.set(REDIS_ITEM_KEY + ":" + itemId + ":param", JsonUtil.objectToJson(paramItem));
+                //设置key的有效期
+                jedisClient.expire(REDIS_ITEM_KEY + ":" + itemId + ":param", REDIS_ITEM_EXPIRE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return TaotaoResult.ok(paramItem);
+        }
+        return TaotaoResult.build(400, "无此商品规格");
+
     }
 }
