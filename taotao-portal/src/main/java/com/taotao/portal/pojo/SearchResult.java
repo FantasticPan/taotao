@@ -18,5 +18,4 @@ public class SearchResult {
     private long pageCount;
     //当前页
     private long curPage;
-
 }

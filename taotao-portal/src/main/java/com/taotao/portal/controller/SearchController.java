@@ -38,5 +38,4 @@ public class SearchController {
         model.addAttribute("page", page);
         return "search";
     }
-
 }
