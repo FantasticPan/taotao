@@ -24,4 +24,11 @@ public class ItemController {
     public TaotaoResult getItemBaseInfo(@PathVariable Long itemId) {
         return itemService.getItemBaseInfo(itemId);
     }
+
+    @RequestMapping("/desc/{itemId}")
+    @ResponseBody
+    public TaotaoResult getItemDesc(@PathVariable Long itemId) {
+        return itemService.getItemDesc(itemId);
+    }
+
 }
