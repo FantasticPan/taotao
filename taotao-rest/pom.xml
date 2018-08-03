@@ -70,6 +70,7 @@
             <artifactId>solr-solrj</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <!-- 配置Tomcat插件 -->

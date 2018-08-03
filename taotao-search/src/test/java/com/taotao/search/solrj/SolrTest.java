@@ -1,4 +1,4 @@
-package com.taotao.rest.solrj;
+package com.taotao.search.solrj;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
