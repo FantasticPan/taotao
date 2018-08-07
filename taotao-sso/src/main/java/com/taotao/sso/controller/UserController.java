@@ -6,6 +6,7 @@ import com.taotao.pojo.TbUser;
 import com.taotao.sso.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,7 +58,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/register",
+            method = RequestMethod.POST,
+            produces = MediaType.TEXT_HTML_VALUE + ";charset=utf-8")
     @ResponseBody
     public TaotaoResult createUser(TbUser user) {
         try {
