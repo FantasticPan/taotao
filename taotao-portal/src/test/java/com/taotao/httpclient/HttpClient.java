@@ -75,7 +75,7 @@ public class HttpClient {
     public void doPost() throws Exception {
         //创建一个httpClient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost post = new HttpPost("http://127.0.0.1:8082/httpclient/post.do");
+        HttpPost post = new HttpPost("http://localhost:8082/httpclient/post.do");
         //执行post请求
         CloseableHttpResponse response = httpClient.execute(post);
         String string = EntityUtils.toString(response.getEntity());
@@ -92,7 +92,7 @@ public class HttpClient {
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         //创建一个post对象
-        HttpPost post = new HttpPost("http://127.0.0.1:8082/httpclient/post.do");
+        HttpPost post = new HttpPost("http://localhost:8082/httpclient/post.do");
         //创建一个Entity。模拟一个表单
         List<NameValuePair> kvList = new ArrayList<>();
         kvList.add(new BasicNameValuePair("username", "张三"));
