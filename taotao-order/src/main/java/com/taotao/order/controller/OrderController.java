@@ -2,33 +2,29 @@ package com.taotao.order.controller;
 
 import com.taotao.common.pojo.TaotaoResult;
 import com.taotao.common.util.ExceptionUtil;
-import com.taotao.pojo.TbContent;
-import com.taotao.order.service.ContentService;
+import com.taotao.order.pojo.Order;
+import com.taotao.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
 /**
- * 内容管理Controller
- * Created by FantasticPan on 2018/7/24.
+ * Created by FantasticPan on 2018/8/27.
  */
 @Controller
-@RequestMapping("/content")
-public class ContentController {
+public class OrderController {
 
     @Autowired
-    private ContentService contentService;
+    private OrderService orderService;
 
-    @RequestMapping("/list/{contentCategoryId}")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public TaotaoResult getContentList(@PathVariable Long contentCategoryId) {
+    public TaotaoResult createOrder(@RequestBody Order order) {
         try {
-            List<TbContent> list = contentService.getContentList(contentCategoryId);
-            return TaotaoResult.ok(list);
+            return orderService.createOrder(order, order.getOrderItems(), order.getOrderShipping());
         } catch (Exception e) {
             e.printStackTrace();
             return TaotaoResult.build(500, ExceptionUtil.getStackTrace(e));
